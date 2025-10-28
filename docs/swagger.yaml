@@ -1,0 +1,1474 @@
+definitions:
+  dto.AddFirmwareVersion:
+    properties:
+      product_id:
+        description: 产品ID
+        type: integer
+      release_date:
+        description: 发布日期
+        type: string
+      remark:
+        description: 备注
+        type: string
+      version:
+        description: 韧件版本号
+        type: string
+    required:
+    - product_id
+    - release_date
+    - version
+    type: object
+  dto.AddLicenseType:
+    properties:
+      feature_ids:
+        description: 功能ID列表
+        items:
+          type: integer
+        type: array
+      license_type:
+        description: 许可证编码
+        type: string
+      product_id:
+        description: 产品ID
+        type: integer
+      type_name:
+        description: 许可证类型名称
+        type: string
+    required:
+    - license_type
+    - product_id
+    - type_name
+    type: object
+  dto.AddManager:
+    properties:
+      email:
+        description: 用户邮箱
+        type: string
+      permissions:
+        allOf:
+        - $ref: '#/definitions/productmanager.Permissions'
+        description: 权限 (read/full)
+      product_id:
+        description: 产品ID
+        type: integer
+      remark:
+        description: 备注
+        type: string
+    required:
+    - email
+    - product_id
+    type: object
+  dto.AddProduct:
+    properties:
+      code:
+        description: ID          int    `json:"id,omitempty"`                    //指定产品id
+        type: string
+      product_name:
+        description: 产品名称
+        type: string
+      product_type:
+        description: 产品名称
+        type: string
+    required:
+    - code
+    - product_name
+    - product_type
+    type: object
+  dto.AddProductFeature:
+    properties:
+      feature_code:
+        description: 功能编码
+        type: string
+      feature_name:
+        description: 功能名称
+        type: string
+      product_id:
+        description: 产品ID
+        type: integer
+    required:
+    - feature_code
+    - feature_name
+    - product_id
+    type: object
+  dto.AddSoftwareVersion:
+    properties:
+      feature_ids:
+        description: 功能ID列表
+        items:
+          type: integer
+        type: array
+      firmware_ids:
+        description: 兼容的韧件版本ID列表
+        items:
+          type: integer
+        type: array
+      product_id:
+        description: 产品ID
+        type: integer
+      release_date:
+        description: 发布日期
+        type: string
+      remark:
+        description: 备注
+        type: string
+      update_log:
+        description: 更新日志
+        type: string
+      version:
+        description: 软件版本号
+        type: string
+    required:
+    - product_id
+    - release_date
+    - version
+    type: object
+  dto.DeviceAdd:
+    properties:
+      license_type_id:
+        type: integer
+      oem_tag:
+        type: string
+      product_id:
+        type: integer
+      remark:
+        type: string
+      sn:
+        type: string
+    required:
+    - license_type_id
+    - product_id
+    - sn
+    type: object
+  dto.DeviceBatchAdd:
+    properties:
+      license_type_id:
+        type: integer
+      oem_tag:
+        type: string
+      product_id:
+        type: integer
+      remark:
+        type: string
+      sns:
+        items:
+          type: string
+        type: array
+    required:
+    - license_type_id
+    - product_id
+    - sns
+    type: object
+  dto.DeviceBatchUpdateLicense:
+    properties:
+      device_ids:
+        items:
+          type: integer
+        type: array
+      license_type_id:
+        type: integer
+      remark:
+        type: string
+    required:
+    - device_ids
+    - license_type_id
+    type: object
+  dto.DeviceUpdate:
+    properties:
+      id:
+        type: integer
+      license_type_id:
+        type: integer
+      oem_tag:
+        type: string
+      remark:
+        type: string
+    required:
+    - id
+    - license_type_id
+    type: object
+  dto.FeatureInfo:
+    properties:
+      feature_code:
+        description: 功能编码
+        type: string
+      feature_name:
+        description: 功能名称
+        type: string
+      id:
+        description: 功能ID
+        type: integer
+    type: object
+  dto.FirmwareInfo:
+    properties:
+      id:
+        description: 韧件版本ID
+        type: integer
+      release_date:
+        description: 发布日期
+        type: string
+      version:
+        description: 韧件版本号
+        type: string
+    type: object
+  dto.FirmwareVersionResponse:
+    properties:
+      created_at:
+        description: 创建时间
+        type: string
+      created_by:
+        description: 创建者ID
+        type: integer
+      created_by_email:
+        description: 创建者邮箱
+        type: string
+      id:
+        description: 韧件版本ID
+        type: integer
+      product_id:
+        description: 产品ID
+        type: integer
+      release_date:
+        description: 发布日期
+        type: string
+      remark:
+        description: 备注
+        type: string
+      version:
+        description: 韧件版本号
+        type: string
+    type: object
+  dto.ModifyFirmwareVersion:
+    properties:
+      id:
+        description: 韧件版本ID
+        type: integer
+      release_date:
+        description: 发布日期
+        type: string
+      remark:
+        description: 备注
+        type: string
+      version:
+        description: 韧件版本号
+        type: string
+    required:
+    - id
+    type: object
+  dto.ModifyProduct:
+    properties:
+      id:
+        description: 产品id不可空
+        type: integer
+      manager_assistant:
+        description: 副管理员
+        items:
+          $ref: '#/definitions/dto.productAssistant'
+        type: array
+      manager_main:
+        description: 主管理员
+        type: integer
+      product_name:
+        description: Code        string `json:"code" binding:"required"`         //
+          产品代号不允许修改
+        type: string
+      product_type:
+        description: 产品类别
+        type: string
+    required:
+    - id
+    type: object
+  dto.ModifySoftwareVersion:
+    properties:
+      feature_ids:
+        description: 功能ID列表
+        items:
+          type: integer
+        type: array
+      firmware_ids:
+        description: 兼容的韧件版本ID列表
+        items:
+          type: integer
+        type: array
+      id:
+        description: 软件版本ID
+        type: integer
+      release_date:
+        description: 发布日期
+        type: string
+      remark:
+        description: 备注
+        type: string
+      update_log:
+        description: 更新日志
+        type: string
+      version:
+        description: 软件版本号
+        type: string
+    required:
+    - id
+    type: object
+  dto.PageResult:
+    properties:
+      extra:
+        additionalProperties: true
+        description: 额外数据
+        type: object
+      list:
+        description: 数据列表
+      page:
+        description: 当前页码
+        type: integer
+      page_size:
+        description: 每页数量
+        type: integer
+      total:
+        description: 总记录数
+        type: integer
+    type: object
+  dto.SoftwareVersionResponse:
+    properties:
+      created_at:
+        description: 创建时间
+        type: string
+      created_by:
+        description: 创建者ID
+        type: integer
+      created_by_email:
+        description: 创建者邮箱
+        type: string
+      features:
+        description: 功能列表
+        items:
+          $ref: '#/definitions/dto.FeatureInfo'
+        type: array
+      firmwares:
+        description: 兼容的韧件版本列表
+        items:
+          $ref: '#/definitions/dto.FirmwareInfo'
+        type: array
+      id:
+        description: 软件版本ID
+        type: integer
+      product_id:
+        description: 产品ID
+        type: integer
+      release_date:
+        description: 发布日期
+        type: string
+      remark:
+        description: 备注
+        type: string
+      update_log:
+        description: 更新日志
+        type: string
+      version:
+        description: 软件版本号
+        type: string
+    type: object
+  dto.UpdateLicenseTypeFeatures:
+    properties:
+      feature_ids:
+        description: 功能ID列表
+        items:
+          type: integer
+        type: array
+      type_id:
+        description: 许可证类型ID
+        type: integer
+    required:
+    - type_id
+    type: object
+  dto.UserLoginInfo:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.productAssistant:
+    properties:
+      permission:
+        $ref: '#/definitions/productmanager.Permissions'
+      remark:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  productmanager.Permissions:
+    enum:
+    - read
+    - read
+    - full
+    type: string
+    x-enum-varnames:
+    - DefaultPermissions
+    - PermissionsRead
+    - PermissionsFull
+  resp.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /activate/audit/list:
+    get:
+      parameters:
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 模块名称
+        in: query
+        name: module
+        type: string
+      - description: 操作类型
+        in: query
+        name: operation
+        type: string
+      - description: 操作用户ID
+        in: query
+        name: user_id
+        type: integer
+      - description: 开始时间
+        in: query
+        name: start_time
+        type: string
+      - description: 结束时间
+        in: query
+        name: end_time
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取操作日志列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取操作日志列表
+      tags:
+      - audit
+  /activate/base/login:
+    post:
+      parameters:
+      - description: 参数：用户登录
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户登录
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 用户登录
+      tags:
+      - Base
+  /activate/base/register:
+    post:
+      parameters:
+      - description: 参数：用户注册
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户注册
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 用户注册
+      tags:
+      - Base
+  /activate/device/{id}:
+    delete:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 设备ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除设备
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 删除设备
+      tags:
+      - device
+  /activate/device/activation-file/{sn}:
+    get:
+      parameters:
+      - description: 产品ID
+        in: path
+        name: productID
+        required: true
+        type: string
+      - description: 设备序列号
+        in: path
+        name: sn
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: 激活文件
+          schema:
+            type: file
+      summary: 获取设备激活文件
+      tags:
+      - device
+  /activate/device/add:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：添加设备
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeviceAdd'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加设备
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 添加单个设备
+      tags:
+      - device
+  /activate/device/batch-add:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：批量添加设备
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeviceBatchAdd'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 批量添加设备
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 批量添加设备
+      tags:
+      - device
+  /activate/device/batch-update-license:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：批量更新许可证类型
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeviceBatchUpdateLicense'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 批量更新许可证类型
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 批量更新设备许可证类型
+      tags:
+      - device
+  /activate/device/license-types:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 产品ID
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取许可证类型列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取产品下的许可证类型列表
+      tags:
+      - device
+  /activate/device/list:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 产品ID
+        in: query
+        name: product_id
+        type: integer
+      - description: 许可证类型ID
+        in: query
+        name: license_type_id
+        type: integer
+      - description: 设备序列号
+        in: query
+        name: sn
+        type: string
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取设备列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取产品下的设备列表
+      tags:
+      - device
+  /activate/device/products:
+    get:
+      parameters:
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取产品列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取产品列表（带设备数量）
+      tags:
+      - device
+  /activate/device/search:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 设备序列号
+        in: query
+        name: sn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取设备信息
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 通过SN获取设备信息
+      tags:
+      - device
+  /activate/device/update:
+    put:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：更新设备
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeviceUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新设备
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 更新设备
+      tags:
+      - device
+  /activate/firmware-versions:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：添加韧件版本
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddFirmwareVersion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加韧件版本
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 添加韧件版本
+      tags:
+      - version
+    put:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：修改韧件版本
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ModifyFirmwareVersion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改韧件版本
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 修改韧件版本
+      tags:
+      - version
+  /activate/firmware-versions/{id}:
+    delete:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 韧件版本ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除韧件版本
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 删除韧件版本
+      tags:
+      - version
+  /activate/firmware-versions/{product_id}:
+    get:
+      parameters:
+      - description: 产品ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取韧件版本列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.PageResult'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/dto.FirmwareVersionResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: 获取韧件版本列表
+      tags:
+      - version
+  /activate/license-type/add:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 添加许可证类型参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddLicenseType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加许可证类型
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 添加许可证类型
+      tags:
+      - LicenseType
+  /activate/license-type/del:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 类型ID
+        in: query
+        name: type_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除许可证类型
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 删除许可证类型
+      tags:
+      - LicenseType
+  /activate/license-type/list:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 产品ID
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取许可证类型列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取许可证类型列表
+      tags:
+      - LicenseType
+  /activate/license-type/update-features:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 更新许可证类型功能列表参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateLicenseTypeFeatures'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新许可证类型功能列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 更新许可证类型功能列表
+      tags:
+      - LicenseType
+  /activate/product-feature/add:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 添加产品功能参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddProductFeature'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加产品功能
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 添加产品功能
+      tags:
+      - ProductFeature
+  /activate/product-feature/del:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 功能ID
+        in: query
+        name: feature_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除产品功能
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 删除产品功能
+      tags:
+      - ProductFeature
+  /activate/product-feature/list:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 产品ID
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取产品功能列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取产品功能列表
+      tags:
+      - ProductFeature
+  /activate/product/add:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：增加产品
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 增加产品
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 增加产品
+      tags:
+      - Product
+  /activate/product/add-manager:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：添加产品管理员
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddManager'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加产品管理员
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 添加产品管理员
+      tags:
+      - Product
+  /activate/product/del:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 产品ID
+        in: query
+        name: product_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除产品
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 删除产品
+      tags:
+      - Product
+  /activate/product/list:
+    get:
+      parameters:
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取产品列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取用户的产品列表
+      tags:
+      - product
+  /activate/product/put:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：修改产品
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ModifyProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改产品
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 修改产品
+      tags:
+      - Product
+  /activate/product/remove-manager:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 管理员ID
+        in: query
+        name: manager_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除产品管理员
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 删除产品管理员
+      tags:
+      - Product
+  /activate/software-versions:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：添加软件版本
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddSoftwareVersion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加软件版本
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 添加软件版本
+      tags:
+      - version
+    put:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：修改软件版本
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ModifySoftwareVersion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改软件版本
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 修改软件版本
+      tags:
+      - version
+  /activate/software-versions/{id}:
+    delete:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 软件版本ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除软件版本
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 删除软件版本
+      tags:
+      - version
+  /activate/software-versions/{product_id}:
+    get:
+      parameters:
+      - description: 产品ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取软件版本列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.PageResult'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/dto.SoftwareVersionResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: 获取软件版本列表
+      tags:
+      - version
+  /activate/version/features/{product_id}:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 产品ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取产品功能列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.FeatureInfo'
+                  type: array
+              type: object
+      summary: 获取产品的所有功能
+      tags:
+      - version
+  /activate/version/firmware/all/{product_id}:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 产品ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取产品韧件版本列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.FirmwareInfo'
+                  type: array
+              type: object
+      summary: 获取产品的所有韧件版本
+      tags:
+      - version
+swagger: "2.0"

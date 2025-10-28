@@ -1,0 +1,34 @@
+app:
+    env: dev
+    cache: false
+    machine-id: 1
+    server-port: 17080
+    api-prefix: /activate
+    private-key: resource/static/keys/private_key.pem
+jwt:
+    access-expire: 7200
+    refresh-expire: 86400
+    asecret: Zrs.abR)C7+JYw%|8PS&;hh8+Mdj3+-8m9ixI5lx,5q#%jJlP45o1TY6kNeyXCT/
+    issuer: sni
+    rsecret: _jl.Z*qrn]]fu_r&ntXVFEcJ4-?KOA3OU9s"Lb06M,YE,xF](I/>g='iD*_C{77O
+mysql:
+    dbname: activate_server
+    host: 127.0.0.1
+    max-idle-conns: 0
+    max-open-conns: 0
+    password: Cambridge#*DR
+    port: 3388
+    user: root
+redis:
+    addr: localhost:6379
+    password:
+    db: 0
+obj-storage:
+    bucket-name:
+    region:
+    access-id:
+    access-secret:
+    role-arn:
+dll:
+    dll-name:
+    dll-path:
