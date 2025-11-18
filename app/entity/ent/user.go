@@ -45,9 +45,11 @@ type UserEdges struct {
 	CreatedDevices []*Device `json:"created_devices,omitempty"`
 	// UpdatedDevices holds the value of the updated_devices edge.
 	UpdatedDevices []*Device `json:"updated_devices,omitempty"`
+	// Posts holds the value of the posts edge.
+	Posts []*Post `json:"posts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [5]bool
 }
 
 // ProductsOrErr returns the Products value or an error if the edge
@@ -84,6 +86,15 @@ func (e UserEdges) UpdatedDevicesOrErr() ([]*Device, error) {
 		return e.UpdatedDevices, nil
 	}
 	return nil, &NotLoadedError{edge: "updated_devices"}
+}
+
+// PostsOrErr returns the Posts value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PostsOrErr() ([]*Post, error) {
+	if e.loadedTypes[4] {
+		return e.Posts, nil
+	}
+	return nil, &NotLoadedError{edge: "posts"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -187,6 +198,11 @@ func (u *User) QueryCreatedDevices() *DeviceQuery {
 // QueryUpdatedDevices queries the "updated_devices" edge of the User entity.
 func (u *User) QueryUpdatedDevices() *DeviceQuery {
 	return NewUserClient(u.config).QueryUpdatedDevices(u)
+}
+
+// QueryPosts queries the "posts" edge of the User entity.
+func (u *User) QueryPosts() *PostQuery {
+	return NewUserClient(u.config).QueryPosts(u)
 }
 
 // Update returns a builder for updating this User.

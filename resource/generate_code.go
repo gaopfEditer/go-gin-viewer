@@ -12,6 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/json-iterator/go"
 )
 
 type CodeDef struct {

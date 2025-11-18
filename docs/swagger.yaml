@@ -58,6 +58,62 @@ definitions:
     - email
     - product_id
     type: object
+  dto.AddMetricEvent:
+    properties:
+      page:
+        description: 页面
+        type: string
+      pageId:
+        description: 页面ID
+        type: string
+      payload:
+        description: 原始JSON字符串
+        type: string
+      referrer:
+        description: 来源
+        type: string
+      ts:
+        description: 上报时间戳(ms)
+        type: integer
+      type:
+        description: 事件类型
+        type: string
+      userAgent:
+        description: UA
+        type: string
+    required:
+    - payload
+    - ts
+    - type
+    type: object
+  dto.AddPost:
+    properties:
+      category_id:
+        description: 类别ID
+        type: integer
+      content:
+        description: 文章内容
+        type: string
+      excerpt:
+        description: 文章摘要
+        type: string
+      slug:
+        description: 文章别名
+        type: string
+      status:
+        description: 文章状态
+        type: string
+      tag_ids:
+        description: 标签ID列表
+        items:
+          type: integer
+        type: array
+      title:
+        description: 文章标题
+        type: string
+    required:
+    - title
+    type: object
   dto.AddProduct:
     properties:
       code:
@@ -254,6 +310,60 @@ definitions:
     required:
     - id
     type: object
+  dto.ModifyMetricEvent:
+    properties:
+      id:
+        type: integer
+      page:
+        type: string
+      pageId:
+        type: string
+      payload:
+        type: string
+      referrer:
+        type: string
+      ts:
+        description: 可选修改
+        type: integer
+      type:
+        description: 可选修改
+        type: string
+      userAgent:
+        type: string
+    required:
+    - id
+    type: object
+  dto.ModifyPost:
+    properties:
+      category_id:
+        description: 类别ID
+        type: integer
+      content:
+        description: 文章内容
+        type: string
+      excerpt:
+        description: 文章摘要
+        type: string
+      id:
+        description: 文章ID
+        type: integer
+      slug:
+        description: 文章别名
+        type: string
+      status:
+        description: 文章状态
+        type: string
+      tag_ids:
+        description: 标签ID列表
+        items:
+          type: integer
+        type: array
+      title:
+        description: 文章标题
+        type: string
+    required:
+    - id
+    type: object
   dto.ModifyProduct:
     properties:
       id:
@@ -408,10 +518,117 @@ definitions:
     - DefaultPermissions
     - PermissionsRead
     - PermissionsFull
+  resource.RspCode:
+    enum:
+    - 200
+    - 100001
+    - 100002
+    - 100003
+    - 200001
+    - 200002
+    - 200003
+    - 200004
+    - 200005
+    - 201000
+    - 201001
+    - 201002
+    - 201003
+    - 201004
+    - 201005
+    - 201006
+    - 201007
+    - 201008
+    - 201009
+    - 201010
+    - 201011
+    - 201012
+    - 201013
+    - 201014
+    - 201015
+    - 201016
+    - 201017
+    - 201018
+    - 201019
+    - 201020
+    - 201021
+    - 201022
+    - 201023
+    - 201024
+    type: integer
+    x-enum-comments:
+      CODE_SUCCESS: 成功
+      ERR_ADD_FAILED: 新增失败
+      ERR_ADD_LOG_FAILED: 新增日志失败
+      ERR_CAPTCHA_EXPIRED: 验证码过期
+      ERR_CAPTCHA_INCORRECT: 验证码错误
+      ERR_DEL_FAILED: 删除失败
+      ERR_DEVICE_NOT_EXIST: 设备不存在
+      ERR_DEVICE_SN_EXIST: 设备序列号已存在
+      ERR_EMAIL_EXIST: 邮箱重复
+      ERR_FEATURE_CODE_EXIST: 功能编码已存在
+      ERR_FEATURE_NAME_EXIST: 功能编码已存在
+      ERR_FIRMWARE_NOT_EXIST: 韧件版本不存在
+      ERR_FIRMWARE_VERSION_EXIST: 韧件版本已存在
+      ERR_INCORRECT_PASSWORD: 密码错误
+      ERR_INVALID_PARAMETER: 参数错误
+      ERR_LICENSE_CODE_EXIST: 许可证类型已存在
+      ERR_LICENSE_TYPE_EXIST: 许可证类型已存在
+      ERR_LICENSE_TYPE_NOT_EXIST: 许可证类型不存在
+      ERR_LOGIN_FAILED: 登录失败
+      ERR_MANAGER_ALREADY_EXIST: 管理员已存在
+      ERR_MOD_FAILED: 修改失败
+      ERR_NO_PERMISSION: 用户无权访问
+      ERR_OPERATION_FAILED: 操作失败
+      ERR_PRODUCT_CODE_EXIST: 产品编号已存在
+      ERR_PRODUCT_HAS_RELATIONS: 产品存在关联数据
+      ERR_PRODUCT_NAME_EXIST: 产品名已存在
+      ERR_PRODUCT_NOT_EXIST: 产品不存在
+      ERR_QUERY_FAILED: 查询失败
+      ERR_SERVER_BUSY: 系统繁忙
+      ERR_SOFTWARE_NOT_EXIST: 软件版本不存在
+      ERR_SOFTWARE_VERSION_EXIST: 软件版本已存在
+      ERR_TOKEN_EXPIRED: token过期
+      ERR_USER_EXIST: 用户已存在
+      ERR_USER_NOT_EXIST: 用户不存在
+    x-enum-varnames:
+    - CODE_SUCCESS
+    - ERR_SERVER_BUSY
+    - ERR_OPERATION_FAILED
+    - ERR_INVALID_PARAMETER
+    - ERR_QUERY_FAILED
+    - ERR_ADD_FAILED
+    - ERR_DEL_FAILED
+    - ERR_MOD_FAILED
+    - ERR_ADD_LOG_FAILED
+    - ERR_TOKEN_EXPIRED
+    - ERR_NO_PERMISSION
+    - ERR_CAPTCHA_INCORRECT
+    - ERR_CAPTCHA_EXPIRED
+    - ERR_EMAIL_EXIST
+    - ERR_LOGIN_FAILED
+    - ERR_INCORRECT_PASSWORD
+    - ERR_USER_EXIST
+    - ERR_PRODUCT_CODE_EXIST
+    - ERR_PRODUCT_NAME_EXIST
+    - ERR_MANAGER_ALREADY_EXIST
+    - ERR_USER_NOT_EXIST
+    - ERR_FIRMWARE_VERSION_EXIST
+    - ERR_SOFTWARE_VERSION_EXIST
+    - ERR_FIRMWARE_NOT_EXIST
+    - ERR_SOFTWARE_NOT_EXIST
+    - ERR_LICENSE_TYPE_EXIST
+    - ERR_LICENSE_CODE_EXIST
+    - ERR_FEATURE_NAME_EXIST
+    - ERR_FEATURE_CODE_EXIST
+    - ERR_PRODUCT_HAS_RELATIONS
+    - ERR_PRODUCT_NOT_EXIST
+    - ERR_LICENSE_TYPE_NOT_EXIST
+    - ERR_DEVICE_SN_EXIST
+    - ERR_DEVICE_NOT_EXIST
   resp.Response:
     properties:
       code:
-        type: integer
+        $ref: '#/definitions/resource.RspCode'
       data: {}
       message:
         type: string
@@ -1030,6 +1247,321 @@ paths:
       summary: 更新许可证类型功能列表
       tags:
       - LicenseType
+  /activate/metrics/add:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：添加指标事件
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddMetricEvent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 添加指标事件
+      tags:
+      - metrics
+  /activate/metrics/delete:
+    delete:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 事件ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 删除指标事件
+      tags:
+      - metrics
+  /activate/metrics/detail:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 事件ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 详情
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取指标事件详情
+      tags:
+      - metrics
+  /activate/metrics/list:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 事件类型
+        in: query
+        name: type
+        type: string
+      - description: 页面ID
+        in: query
+        name: pageId
+        type: string
+      - description: 页面
+        in: query
+        name: route
+        type: string
+      - description: 开始时间戳(ms)
+        in: query
+        name: startTs
+        type: integer
+      - description: 结束时间戳(ms)
+        in: query
+        name: endTs
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取指标事件列表
+      tags:
+      - metrics
+  /activate/metrics/update:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：更新指标事件
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ModifyMetricEvent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 更新指标事件
+      tags:
+      - metrics
+  /activate/post/add:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：添加文章
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加文章
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 添加文章
+      tags:
+      - post
+  /activate/post/delete:
+    delete:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 文章ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除文章
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 删除文章
+      tags:
+      - post
+  /activate/post/detail:
+    get:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 文章ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取文章详情
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 获取文章详情
+      tags:
+      - post
+  /activate/post/list:
+    get:
+      parameters:
+      - default: 1
+        description: 页码，从1开始
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 搜索关键字
+        in: query
+        name: search
+        type: string
+      - description: 文章状态
+        in: query
+        name: status
+        type: string
+      - description: 类别ID
+        in: query
+        name: category_id
+        type: integer
+      - description: 标签ID
+        in: query
+        name: tag_id
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取文章列表
+          schema:
+            $ref: '#/definitions/resp.Response'
+      summary: 获取文章列表
+      tags:
+      - post
+  /activate/post/update:
+    post:
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 参数：更新文章
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ModifyPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新文章
+          schema:
+            allOf:
+            - $ref: '#/definitions/resp.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: 更新文章
+      tags:
+      - post
   /activate/product-feature/add:
     post:
       parameters:

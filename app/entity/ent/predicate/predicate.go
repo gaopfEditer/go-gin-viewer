@@ -21,6 +21,21 @@ type LicenseType func(*sql.Selector)
 // LicenseTypeFeatures is the predicate function for licensetypefeatures builders.
 type LicenseTypeFeatures func(*sql.Selector)
 
+// MetricEvent is the predicate function for metricevent builders.
+type MetricEvent func(*sql.Selector)
+
+// Post is the predicate function for post builders.
+type Post func(*sql.Selector)
+
+// PostCategory is the predicate function for postcategory builders.
+type PostCategory func(*sql.Selector)
+
+// PostTag is the predicate function for posttag builders.
+type PostTag func(*sql.Selector)
+
+// PostTagRelation is the predicate function for posttagrelation builders.
+type PostTagRelation func(*sql.Selector)
+
 // Product is the predicate function for product builders.
 type Product func(*sql.Selector)
 

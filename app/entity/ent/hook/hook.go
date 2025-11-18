@@ -69,6 +69,66 @@ func (f LicenseTypeFeaturesFunc) Mutate(ctx context.Context, m ent.Mutation) (en
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LicenseTypeFeaturesMutation", m)
 }
 
+// The MetricEventFunc type is an adapter to allow the use of ordinary
+// function as MetricEvent mutator.
+type MetricEventFunc func(context.Context, *ent.MetricEventMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MetricEventFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MetricEventMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MetricEventMutation", m)
+}
+
+// The PostFunc type is an adapter to allow the use of ordinary
+// function as Post mutator.
+type PostFunc func(context.Context, *ent.PostMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PostFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PostMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostMutation", m)
+}
+
+// The PostCategoryFunc type is an adapter to allow the use of ordinary
+// function as PostCategory mutator.
+type PostCategoryFunc func(context.Context, *ent.PostCategoryMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PostCategoryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PostCategoryMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostCategoryMutation", m)
+}
+
+// The PostTagFunc type is an adapter to allow the use of ordinary
+// function as PostTag mutator.
+type PostTagFunc func(context.Context, *ent.PostTagMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PostTagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PostTagMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostTagMutation", m)
+}
+
+// The PostTagRelationFunc type is an adapter to allow the use of ordinary
+// function as PostTagRelation mutator.
+type PostTagRelationFunc func(context.Context, *ent.PostTagRelationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PostTagRelationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PostTagRelationMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostTagRelationMutation", m)
+}
+
 // The ProductFunc type is an adapter to allow the use of ordinary
 // function as Product mutator.
 type ProductFunc func(context.Context, *ent.ProductMutation) (ent.Value, error)

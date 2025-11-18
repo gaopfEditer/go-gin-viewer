@@ -10,6 +10,7 @@ import (
 
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/auditlog"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/device"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/post"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/predicate"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productmanager"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/user"
@@ -29,6 +30,7 @@ type UserQuery struct {
 	withAuditLogs      *AuditLogQuery
 	withCreatedDevices *DeviceQuery
 	withUpdatedDevices *DeviceQuery
+	withPosts          *PostQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -146,6 +148,28 @@ func (uq *UserQuery) QueryUpdatedDevices() *DeviceQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(device.Table, device.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, user.UpdatedDevicesTable, user.UpdatedDevicesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPosts chains the current query on the "posts" edge.
+func (uq *UserQuery) QueryPosts() *PostQuery {
+	query := (&PostClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(post.Table, post.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PostsTable, user.PostsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -349,6 +373,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withAuditLogs:      uq.withAuditLogs.Clone(),
 		withCreatedDevices: uq.withCreatedDevices.Clone(),
 		withUpdatedDevices: uq.withUpdatedDevices.Clone(),
+		withPosts:          uq.withPosts.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -396,6 +421,17 @@ func (uq *UserQuery) WithUpdatedDevices(opts ...func(*DeviceQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withUpdatedDevices = query
+	return uq
+}
+
+// WithPosts tells the query-builder to eager-load the nodes that are connected to
+// the "posts" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithPosts(opts ...func(*PostQuery)) *UserQuery {
+	query := (&PostClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withPosts = query
 	return uq
 }
 
@@ -477,11 +513,12 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [5]bool{
 			uq.withProducts != nil,
 			uq.withAuditLogs != nil,
 			uq.withCreatedDevices != nil,
 			uq.withUpdatedDevices != nil,
+			uq.withPosts != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -527,6 +564,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadUpdatedDevices(ctx, query, nodes,
 			func(n *User) { n.Edges.UpdatedDevices = []*Device{} },
 			func(n *User, e *Device) { n.Edges.UpdatedDevices = append(n.Edges.UpdatedDevices, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withPosts; query != nil {
+		if err := uq.loadPosts(ctx, query, nodes,
+			func(n *User) { n.Edges.Posts = []*Post{} },
+			func(n *User, e *Post) { n.Edges.Posts = append(n.Edges.Posts, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -648,6 +692,37 @@ func (uq *UserQuery) loadUpdatedDevices(ctx context.Context, query *DeviceQuery,
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "updated_by" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadPosts(ctx context.Context, query *PostQuery, nodes []*User, init func(*User), assign func(*User, *Post)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.PostsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_posts
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_posts" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_posts" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

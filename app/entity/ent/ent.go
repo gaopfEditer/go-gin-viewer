@@ -14,6 +14,11 @@ import (
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/firmwareversion"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/licensetype"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/licensetypefeatures"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/metricevent"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/post"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/postcategory"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/posttag"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/posttagrelation"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/product"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productfeature"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productmanager"
@@ -87,6 +92,11 @@ func checkColumn(table, column string) error {
 			firmwareversion.Table:     firmwareversion.ValidColumn,
 			licensetype.Table:         licensetype.ValidColumn,
 			licensetypefeatures.Table: licensetypefeatures.ValidColumn,
+			metricevent.Table:         metricevent.ValidColumn,
+			post.Table:                post.ValidColumn,
+			postcategory.Table:        postcategory.ValidColumn,
+			posttag.Table:             posttag.ValidColumn,
+			posttagrelation.Table:     posttagrelation.ValidColumn,
 			product.Table:             product.ValidColumn,
 			productfeature.Table:      productfeature.ValidColumn,
 			productmanager.Table:      productmanager.ValidColumn,

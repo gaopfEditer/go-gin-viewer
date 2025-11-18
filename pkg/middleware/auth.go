@@ -1,8 +1,9 @@
 package middleware
 
 import (
-	"github.com/golang-jwt/jwt/v4"
 	"strings"
+
+	"github.com/golang-jwt/jwt/v4"
 
 	"cambridge-hit.com/gin-base/activateserver/pkg/util/auth"
 	"cambridge-hit.com/gin-base/activateserver/pkg/util/req-resp/resp"

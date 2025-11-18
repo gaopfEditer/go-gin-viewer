@@ -10,6 +10,11 @@ import (
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/firmwareversion"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/licensetype"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/licensetypefeatures"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/metricevent"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/post"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/postcategory"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/posttag"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/posttagrelation"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/product"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productfeature"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productmanager"
@@ -104,6 +109,136 @@ func init() {
 	licensetypefeaturesDescID := licensetypefeaturesFields[0].Descriptor()
 	// licensetypefeatures.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	licensetypefeatures.IDValidator = licensetypefeaturesDescID.Validators[0].(func(int) error)
+	metriceventFields := schema.MetricEvent{}.Fields()
+	_ = metriceventFields
+	// metriceventDescType is the schema descriptor for type field.
+	metriceventDescType := metriceventFields[1].Descriptor()
+	// metricevent.TypeValidator is a validator for the "type" field. It is called by the builders before save.
+	metricevent.TypeValidator = metriceventDescType.Validators[0].(func(string) error)
+	// metriceventDescPage is the schema descriptor for page field.
+	metriceventDescPage := metriceventFields[3].Descriptor()
+	// metricevent.DefaultPage holds the default value on creation for the page field.
+	metricevent.DefaultPage = metriceventDescPage.Default.(string)
+	// metriceventDescPageID is the schema descriptor for page_id field.
+	metriceventDescPageID := metriceventFields[4].Descriptor()
+	// metricevent.DefaultPageID holds the default value on creation for the page_id field.
+	metricevent.DefaultPageID = metriceventDescPageID.Default.(string)
+	// metriceventDescReferrer is the schema descriptor for referrer field.
+	metriceventDescReferrer := metriceventFields[5].Descriptor()
+	// metricevent.DefaultReferrer holds the default value on creation for the referrer field.
+	metricevent.DefaultReferrer = metriceventDescReferrer.Default.(string)
+	// metriceventDescUserAgent is the schema descriptor for user_agent field.
+	metriceventDescUserAgent := metriceventFields[6].Descriptor()
+	// metricevent.DefaultUserAgent holds the default value on creation for the user_agent field.
+	metricevent.DefaultUserAgent = metriceventDescUserAgent.Default.(string)
+	// metriceventDescCreatedAt is the schema descriptor for created_at field.
+	metriceventDescCreatedAt := metriceventFields[8].Descriptor()
+	// metricevent.DefaultCreatedAt holds the default value on creation for the created_at field.
+	metricevent.DefaultCreatedAt = metriceventDescCreatedAt.Default.(func() time.Time)
+	// metriceventDescUpdatedAt is the schema descriptor for updated_at field.
+	metriceventDescUpdatedAt := metriceventFields[9].Descriptor()
+	// metricevent.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	metricevent.DefaultUpdatedAt = metriceventDescUpdatedAt.Default.(func() time.Time)
+	// metricevent.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	metricevent.UpdateDefaultUpdatedAt = metriceventDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// metriceventDescID is the schema descriptor for id field.
+	metriceventDescID := metriceventFields[0].Descriptor()
+	// metricevent.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	metricevent.IDValidator = metriceventDescID.Validators[0].(func(int) error)
+	postFields := schema.Post{}.Fields()
+	_ = postFields
+	// postDescTitle is the schema descriptor for title field.
+	postDescTitle := postFields[1].Descriptor()
+	// post.TitleValidator is a validator for the "title" field. It is called by the builders before save.
+	post.TitleValidator = postDescTitle.Validators[0].(func(string) error)
+	// postDescStatus is the schema descriptor for status field.
+	postDescStatus := postFields[5].Descriptor()
+	// post.DefaultStatus holds the default value on creation for the status field.
+	post.DefaultStatus = postDescStatus.Default.(string)
+	// postDescViewCount is the schema descriptor for view_count field.
+	postDescViewCount := postFields[6].Descriptor()
+	// post.DefaultViewCount holds the default value on creation for the view_count field.
+	post.DefaultViewCount = postDescViewCount.Default.(int)
+	// postDescCreatedAt is the schema descriptor for created_at field.
+	postDescCreatedAt := postFields[8].Descriptor()
+	// post.DefaultCreatedAt holds the default value on creation for the created_at field.
+	post.DefaultCreatedAt = postDescCreatedAt.Default.(func() time.Time)
+	// postDescUpdatedAt is the schema descriptor for updated_at field.
+	postDescUpdatedAt := postFields[9].Descriptor()
+	// post.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	post.DefaultUpdatedAt = postDescUpdatedAt.Default.(func() time.Time)
+	// post.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	post.UpdateDefaultUpdatedAt = postDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// postDescID is the schema descriptor for id field.
+	postDescID := postFields[0].Descriptor()
+	// post.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	post.IDValidator = postDescID.Validators[0].(func(int) error)
+	postcategoryFields := schema.PostCategory{}.Fields()
+	_ = postcategoryFields
+	// postcategoryDescName is the schema descriptor for name field.
+	postcategoryDescName := postcategoryFields[1].Descriptor()
+	// postcategory.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	postcategory.NameValidator = postcategoryDescName.Validators[0].(func(string) error)
+	// postcategoryDescSortOrder is the schema descriptor for sort_order field.
+	postcategoryDescSortOrder := postcategoryFields[5].Descriptor()
+	// postcategory.DefaultSortOrder holds the default value on creation for the sort_order field.
+	postcategory.DefaultSortOrder = postcategoryDescSortOrder.Default.(int)
+	// postcategoryDescIsActive is the schema descriptor for is_active field.
+	postcategoryDescIsActive := postcategoryFields[6].Descriptor()
+	// postcategory.DefaultIsActive holds the default value on creation for the is_active field.
+	postcategory.DefaultIsActive = postcategoryDescIsActive.Default.(bool)
+	// postcategoryDescCreatedAt is the schema descriptor for created_at field.
+	postcategoryDescCreatedAt := postcategoryFields[7].Descriptor()
+	// postcategory.DefaultCreatedAt holds the default value on creation for the created_at field.
+	postcategory.DefaultCreatedAt = postcategoryDescCreatedAt.Default.(func() time.Time)
+	// postcategoryDescUpdatedAt is the schema descriptor for updated_at field.
+	postcategoryDescUpdatedAt := postcategoryFields[8].Descriptor()
+	// postcategory.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	postcategory.DefaultUpdatedAt = postcategoryDescUpdatedAt.Default.(func() time.Time)
+	// postcategory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	postcategory.UpdateDefaultUpdatedAt = postcategoryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// postcategoryDescID is the schema descriptor for id field.
+	postcategoryDescID := postcategoryFields[0].Descriptor()
+	// postcategory.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	postcategory.IDValidator = postcategoryDescID.Validators[0].(func(int) error)
+	posttagFields := schema.PostTag{}.Fields()
+	_ = posttagFields
+	// posttagDescName is the schema descriptor for name field.
+	posttagDescName := posttagFields[1].Descriptor()
+	// posttag.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	posttag.NameValidator = posttagDescName.Validators[0].(func(string) error)
+	// posttagDescPostCount is the schema descriptor for post_count field.
+	posttagDescPostCount := posttagFields[5].Descriptor()
+	// posttag.DefaultPostCount holds the default value on creation for the post_count field.
+	posttag.DefaultPostCount = posttagDescPostCount.Default.(int)
+	// posttagDescIsActive is the schema descriptor for is_active field.
+	posttagDescIsActive := posttagFields[6].Descriptor()
+	// posttag.DefaultIsActive holds the default value on creation for the is_active field.
+	posttag.DefaultIsActive = posttagDescIsActive.Default.(bool)
+	// posttagDescCreatedAt is the schema descriptor for created_at field.
+	posttagDescCreatedAt := posttagFields[7].Descriptor()
+	// posttag.DefaultCreatedAt holds the default value on creation for the created_at field.
+	posttag.DefaultCreatedAt = posttagDescCreatedAt.Default.(func() time.Time)
+	// posttagDescUpdatedAt is the schema descriptor for updated_at field.
+	posttagDescUpdatedAt := posttagFields[8].Descriptor()
+	// posttag.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	posttag.DefaultUpdatedAt = posttagDescUpdatedAt.Default.(func() time.Time)
+	// posttag.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	posttag.UpdateDefaultUpdatedAt = posttagDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// posttagDescID is the schema descriptor for id field.
+	posttagDescID := posttagFields[0].Descriptor()
+	// posttag.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	posttag.IDValidator = posttagDescID.Validators[0].(func(int) error)
+	posttagrelationFields := schema.PostTagRelation{}.Fields()
+	_ = posttagrelationFields
+	// posttagrelationDescCreatedAt is the schema descriptor for created_at field.
+	posttagrelationDescCreatedAt := posttagrelationFields[3].Descriptor()
+	// posttagrelation.DefaultCreatedAt holds the default value on creation for the created_at field.
+	posttagrelation.DefaultCreatedAt = posttagrelationDescCreatedAt.Default.(func() time.Time)
+	// posttagrelationDescID is the schema descriptor for id field.
+	posttagrelationDescID := posttagrelationFields[0].Descriptor()
+	// posttagrelation.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	posttagrelation.IDValidator = posttagrelationDescID.Validators[0].(func(int) error)
 	productFields := schema.Product{}.Fields()
 	_ = productFields
 	// productDescCode is the schema descriptor for code field.

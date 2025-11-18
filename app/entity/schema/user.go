@@ -47,6 +47,7 @@ func (User) Edges() []ent.Edge {
 			Ref("creator"),
 		edge.From("updated_devices", Device.Type).
 			Ref("updater"),
+		edge.To("posts", Post.Type), // 用户创建的文章
 	}
 }
 

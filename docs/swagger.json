@@ -987,6 +987,516 @@
                 }
             }
         },
+        "/activate/metrics/add": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "添加指标事件",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "参数：添加指标事件",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddMetricEvent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "添加",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/resp.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/metrics/delete": {
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "删除指标事件",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "事件ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/resp.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/metrics/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "获取指标事件详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "事件ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "详情",
+                        "schema": {
+                            "$ref": "#/definitions/resp.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/metrics/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "获取指标事件列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "事件类型",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "页面ID",
+                        "name": "pageId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "页面",
+                        "name": "route",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "开始时间戳(ms)",
+                        "name": "startTs",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间戳(ms)",
+                        "name": "endTs",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "列表",
+                        "schema": {
+                            "$ref": "#/definitions/resp.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/metrics/update": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "更新指标事件",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "参数：更新指标事件",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ModifyMetricEvent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/resp.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/post/add": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "添加文章",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "参数：添加文章",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "添加文章",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/resp.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/post/delete": {
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "删除文章",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "文章ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除文章",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/resp.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/post/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "获取文章详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "文章ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取文章详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/resp.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/post/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "获取文章列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码，从1开始",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "搜索关键字",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "文章状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "类别ID",
+                        "name": "category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "标签ID",
+                        "name": "tag_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取文章列表",
+                        "schema": {
+                            "$ref": "#/definitions/resp.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/activate/post/update": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "更新文章",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "参数：更新文章",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ModifyPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新文章",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/resp.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/activate/product-feature/add": {
             "post": {
                 "produces": [
@@ -1796,6 +2306,83 @@
                 }
             }
         },
+        "dto.AddMetricEvent": {
+            "type": "object",
+            "required": [
+                "payload",
+                "ts",
+                "type"
+            ],
+            "properties": {
+                "page": {
+                    "description": "页面",
+                    "type": "string"
+                },
+                "pageId": {
+                    "description": "页面ID",
+                    "type": "string"
+                },
+                "payload": {
+                    "description": "原始JSON字符串",
+                    "type": "string"
+                },
+                "referrer": {
+                    "description": "来源",
+                    "type": "string"
+                },
+                "ts": {
+                    "description": "上报时间戳(ms)",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "事件类型",
+                    "type": "string"
+                },
+                "userAgent": {
+                    "description": "UA",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AddPost": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "category_id": {
+                    "description": "类别ID",
+                    "type": "integer"
+                },
+                "content": {
+                    "description": "文章内容",
+                    "type": "string"
+                },
+                "excerpt": {
+                    "description": "文章摘要",
+                    "type": "string"
+                },
+                "slug": {
+                    "description": "文章别名",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "文章状态",
+                    "type": "string"
+                },
+                "tag_ids": {
+                    "description": "标签ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "description": "文章标题",
+                    "type": "string"
+                }
+            }
+        },
         "dto.AddProduct": {
             "type": "object",
             "required": [
@@ -2074,6 +2661,83 @@
                 }
             }
         },
+        "dto.ModifyMetricEvent": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "string"
+                },
+                "pageId": {
+                    "type": "string"
+                },
+                "payload": {
+                    "type": "string"
+                },
+                "referrer": {
+                    "type": "string"
+                },
+                "ts": {
+                    "description": "可选修改",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "可选修改",
+                    "type": "string"
+                },
+                "userAgent": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ModifyPost": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "category_id": {
+                    "description": "类别ID",
+                    "type": "integer"
+                },
+                "content": {
+                    "description": "文章内容",
+                    "type": "string"
+                },
+                "excerpt": {
+                    "description": "文章摘要",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "文章ID",
+                    "type": "integer"
+                },
+                "slug": {
+                    "description": "文章别名",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "文章状态",
+                    "type": "string"
+                },
+                "tag_ids": {
+                    "description": "标签ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "description": "文章标题",
+                    "type": "string"
+                }
+            }
+        },
         "dto.ModifyProduct": {
             "type": "object",
             "required": [
@@ -2289,11 +2953,122 @@
                 "PermissionsFull"
             ]
         },
+        "resource.RspCode": {
+            "type": "integer",
+            "enum": [
+                200,
+                100001,
+                100002,
+                100003,
+                200001,
+                200002,
+                200003,
+                200004,
+                200005,
+                201000,
+                201001,
+                201002,
+                201003,
+                201004,
+                201005,
+                201006,
+                201007,
+                201008,
+                201009,
+                201010,
+                201011,
+                201012,
+                201013,
+                201014,
+                201015,
+                201016,
+                201017,
+                201018,
+                201019,
+                201020,
+                201021,
+                201022,
+                201023,
+                201024
+            ],
+            "x-enum-comments": {
+                "CODE_SUCCESS": "成功",
+                "ERR_ADD_FAILED": "新增失败",
+                "ERR_ADD_LOG_FAILED": "新增日志失败",
+                "ERR_CAPTCHA_EXPIRED": "验证码过期",
+                "ERR_CAPTCHA_INCORRECT": "验证码错误",
+                "ERR_DEL_FAILED": "删除失败",
+                "ERR_DEVICE_NOT_EXIST": "设备不存在",
+                "ERR_DEVICE_SN_EXIST": "设备序列号已存在",
+                "ERR_EMAIL_EXIST": "邮箱重复",
+                "ERR_FEATURE_CODE_EXIST": "功能编码已存在",
+                "ERR_FEATURE_NAME_EXIST": "功能编码已存在",
+                "ERR_FIRMWARE_NOT_EXIST": "韧件版本不存在",
+                "ERR_FIRMWARE_VERSION_EXIST": "韧件版本已存在",
+                "ERR_INCORRECT_PASSWORD": "密码错误",
+                "ERR_INVALID_PARAMETER": "参数错误",
+                "ERR_LICENSE_CODE_EXIST": "许可证类型已存在",
+                "ERR_LICENSE_TYPE_EXIST": "许可证类型已存在",
+                "ERR_LICENSE_TYPE_NOT_EXIST": "许可证类型不存在",
+                "ERR_LOGIN_FAILED": "登录失败",
+                "ERR_MANAGER_ALREADY_EXIST": "管理员已存在",
+                "ERR_MOD_FAILED": "修改失败",
+                "ERR_NO_PERMISSION": "用户无权访问",
+                "ERR_OPERATION_FAILED": "操作失败",
+                "ERR_PRODUCT_CODE_EXIST": "产品编号已存在",
+                "ERR_PRODUCT_HAS_RELATIONS": "产品存在关联数据",
+                "ERR_PRODUCT_NAME_EXIST": "产品名已存在",
+                "ERR_PRODUCT_NOT_EXIST": "产品不存在",
+                "ERR_QUERY_FAILED": "查询失败",
+                "ERR_SERVER_BUSY": "系统繁忙",
+                "ERR_SOFTWARE_NOT_EXIST": "软件版本不存在",
+                "ERR_SOFTWARE_VERSION_EXIST": "软件版本已存在",
+                "ERR_TOKEN_EXPIRED": "token过期",
+                "ERR_USER_EXIST": "用户已存在",
+                "ERR_USER_NOT_EXIST": "用户不存在"
+            },
+            "x-enum-varnames": [
+                "CODE_SUCCESS",
+                "ERR_SERVER_BUSY",
+                "ERR_OPERATION_FAILED",
+                "ERR_INVALID_PARAMETER",
+                "ERR_QUERY_FAILED",
+                "ERR_ADD_FAILED",
+                "ERR_DEL_FAILED",
+                "ERR_MOD_FAILED",
+                "ERR_ADD_LOG_FAILED",
+                "ERR_TOKEN_EXPIRED",
+                "ERR_NO_PERMISSION",
+                "ERR_CAPTCHA_INCORRECT",
+                "ERR_CAPTCHA_EXPIRED",
+                "ERR_EMAIL_EXIST",
+                "ERR_LOGIN_FAILED",
+                "ERR_INCORRECT_PASSWORD",
+                "ERR_USER_EXIST",
+                "ERR_PRODUCT_CODE_EXIST",
+                "ERR_PRODUCT_NAME_EXIST",
+                "ERR_MANAGER_ALREADY_EXIST",
+                "ERR_USER_NOT_EXIST",
+                "ERR_FIRMWARE_VERSION_EXIST",
+                "ERR_SOFTWARE_VERSION_EXIST",
+                "ERR_FIRMWARE_NOT_EXIST",
+                "ERR_SOFTWARE_NOT_EXIST",
+                "ERR_LICENSE_TYPE_EXIST",
+                "ERR_LICENSE_CODE_EXIST",
+                "ERR_FEATURE_NAME_EXIST",
+                "ERR_FEATURE_CODE_EXIST",
+                "ERR_PRODUCT_HAS_RELATIONS",
+                "ERR_PRODUCT_NOT_EXIST",
+                "ERR_LICENSE_TYPE_NOT_EXIST",
+                "ERR_DEVICE_SN_EXIST",
+                "ERR_DEVICE_NOT_EXIST"
+            ]
+        },
         "resp.Response": {
             "type": "object",
             "properties": {
                 "code": {
-                    "type": "integer"
+                    "$ref": "#/definitions/resource.RspCode"
                 },
                 "data": {},
                 "message": {

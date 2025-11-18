@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Go 应用服务
+  go-viewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-viewer-app
+    ports:
+      - "17080:17080"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      # 挂载配置文件（可选，用于动态修改配置）
+      - ./resource/static/config.yml:/app/resource/static/config.yml:ro
+      # 挂载日志目录（可选，用于持久化日志）
+      - ./logs:/app/logs
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - go-viewer-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:17080/swagger/index.html"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: go-viewer-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Cambridge#*DR
+      MYSQL_DATABASE: activate_server
+      TZ: Asia/Shanghai
+    ports:
+      - "3388:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro  # 可选：初始化 SQL
+    networks:
+      - go-viewer-network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pCambridge#*DR"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 服务
+  redis:
+    image: redis:7-alpine
+    container_name: go-viewer-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - go-viewer-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+networks:
+  go-viewer-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+

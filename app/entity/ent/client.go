@@ -16,6 +16,11 @@ import (
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/firmwareversion"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/licensetype"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/licensetypefeatures"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/metricevent"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/post"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/postcategory"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/posttag"
+	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/posttagrelation"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/product"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productfeature"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productmanager"
@@ -42,6 +47,16 @@ type Client struct {
 	LicenseType *LicenseTypeClient
 	// LicenseTypeFeatures is the client for interacting with the LicenseTypeFeatures builders.
 	LicenseTypeFeatures *LicenseTypeFeaturesClient
+	// MetricEvent is the client for interacting with the MetricEvent builders.
+	MetricEvent *MetricEventClient
+	// Post is the client for interacting with the Post builders.
+	Post *PostClient
+	// PostCategory is the client for interacting with the PostCategory builders.
+	PostCategory *PostCategoryClient
+	// PostTag is the client for interacting with the PostTag builders.
+	PostTag *PostTagClient
+	// PostTagRelation is the client for interacting with the PostTagRelation builders.
+	PostTagRelation *PostTagRelationClient
 	// Product is the client for interacting with the Product builders.
 	Product *ProductClient
 	// ProductFeature is the client for interacting with the ProductFeature builders.
@@ -70,6 +85,11 @@ func (c *Client) init() {
 	c.FirmwareVersion = NewFirmwareVersionClient(c.config)
 	c.LicenseType = NewLicenseTypeClient(c.config)
 	c.LicenseTypeFeatures = NewLicenseTypeFeaturesClient(c.config)
+	c.MetricEvent = NewMetricEventClient(c.config)
+	c.Post = NewPostClient(c.config)
+	c.PostCategory = NewPostCategoryClient(c.config)
+	c.PostTag = NewPostTagClient(c.config)
+	c.PostTagRelation = NewPostTagRelationClient(c.config)
 	c.Product = NewProductClient(c.config)
 	c.ProductFeature = NewProductFeatureClient(c.config)
 	c.ProductManager = NewProductManagerClient(c.config)
@@ -165,6 +185,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		FirmwareVersion:     NewFirmwareVersionClient(cfg),
 		LicenseType:         NewLicenseTypeClient(cfg),
 		LicenseTypeFeatures: NewLicenseTypeFeaturesClient(cfg),
+		MetricEvent:         NewMetricEventClient(cfg),
+		Post:                NewPostClient(cfg),
+		PostCategory:        NewPostCategoryClient(cfg),
+		PostTag:             NewPostTagClient(cfg),
+		PostTagRelation:     NewPostTagRelationClient(cfg),
 		Product:             NewProductClient(cfg),
 		ProductFeature:      NewProductFeatureClient(cfg),
 		ProductManager:      NewProductManagerClient(cfg),
@@ -194,6 +219,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		FirmwareVersion:     NewFirmwareVersionClient(cfg),
 		LicenseType:         NewLicenseTypeClient(cfg),
 		LicenseTypeFeatures: NewLicenseTypeFeaturesClient(cfg),
+		MetricEvent:         NewMetricEventClient(cfg),
+		Post:                NewPostClient(cfg),
+		PostCategory:        NewPostCategoryClient(cfg),
+		PostTag:             NewPostTagClient(cfg),
+		PostTagRelation:     NewPostTagRelationClient(cfg),
 		Product:             NewProductClient(cfg),
 		ProductFeature:      NewProductFeatureClient(cfg),
 		ProductManager:      NewProductManagerClient(cfg),
@@ -229,7 +259,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.AuditLog, c.Device, c.FirmwareVersion, c.LicenseType, c.LicenseTypeFeatures,
-		c.Product, c.ProductFeature, c.ProductManager, c.SoftwareVersion, c.User,
+		c.MetricEvent, c.Post, c.PostCategory, c.PostTag, c.PostTagRelation, c.Product,
+		c.ProductFeature, c.ProductManager, c.SoftwareVersion, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -240,7 +271,8 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.AuditLog, c.Device, c.FirmwareVersion, c.LicenseType, c.LicenseTypeFeatures,
-		c.Product, c.ProductFeature, c.ProductManager, c.SoftwareVersion, c.User,
+		c.MetricEvent, c.Post, c.PostCategory, c.PostTag, c.PostTagRelation, c.Product,
+		c.ProductFeature, c.ProductManager, c.SoftwareVersion, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -259,6 +291,16 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.LicenseType.mutate(ctx, m)
 	case *LicenseTypeFeaturesMutation:
 		return c.LicenseTypeFeatures.mutate(ctx, m)
+	case *MetricEventMutation:
+		return c.MetricEvent.mutate(ctx, m)
+	case *PostMutation:
+		return c.Post.mutate(ctx, m)
+	case *PostCategoryMutation:
+		return c.PostCategory.mutate(ctx, m)
+	case *PostTagMutation:
+		return c.PostTag.mutate(ctx, m)
+	case *PostTagRelationMutation:
+		return c.PostTagRelation.mutate(ctx, m)
 	case *ProductMutation:
 		return c.Product.mutate(ctx, m)
 	case *ProductFeatureMutation:
@@ -1176,6 +1218,783 @@ func (c *LicenseTypeFeaturesClient) mutate(ctx context.Context, m *LicenseTypeFe
 		return (&LicenseTypeFeaturesDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown LicenseTypeFeatures mutation op: %q", m.Op())
+	}
+}
+
+// MetricEventClient is a client for the MetricEvent schema.
+type MetricEventClient struct {
+	config
+}
+
+// NewMetricEventClient returns a client for the MetricEvent from the given config.
+func NewMetricEventClient(c config) *MetricEventClient {
+	return &MetricEventClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `metricevent.Hooks(f(g(h())))`.
+func (c *MetricEventClient) Use(hooks ...Hook) {
+	c.hooks.MetricEvent = append(c.hooks.MetricEvent, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `metricevent.Intercept(f(g(h())))`.
+func (c *MetricEventClient) Intercept(interceptors ...Interceptor) {
+	c.inters.MetricEvent = append(c.inters.MetricEvent, interceptors...)
+}
+
+// Create returns a builder for creating a MetricEvent entity.
+func (c *MetricEventClient) Create() *MetricEventCreate {
+	mutation := newMetricEventMutation(c.config, OpCreate)
+	return &MetricEventCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of MetricEvent entities.
+func (c *MetricEventClient) CreateBulk(builders ...*MetricEventCreate) *MetricEventCreateBulk {
+	return &MetricEventCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *MetricEventClient) MapCreateBulk(slice any, setFunc func(*MetricEventCreate, int)) *MetricEventCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &MetricEventCreateBulk{err: fmt.Errorf("calling to MetricEventClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*MetricEventCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &MetricEventCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for MetricEvent.
+func (c *MetricEventClient) Update() *MetricEventUpdate {
+	mutation := newMetricEventMutation(c.config, OpUpdate)
+	return &MetricEventUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *MetricEventClient) UpdateOne(me *MetricEvent) *MetricEventUpdateOne {
+	mutation := newMetricEventMutation(c.config, OpUpdateOne, withMetricEvent(me))
+	return &MetricEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *MetricEventClient) UpdateOneID(id int) *MetricEventUpdateOne {
+	mutation := newMetricEventMutation(c.config, OpUpdateOne, withMetricEventID(id))
+	return &MetricEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for MetricEvent.
+func (c *MetricEventClient) Delete() *MetricEventDelete {
+	mutation := newMetricEventMutation(c.config, OpDelete)
+	return &MetricEventDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *MetricEventClient) DeleteOne(me *MetricEvent) *MetricEventDeleteOne {
+	return c.DeleteOneID(me.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *MetricEventClient) DeleteOneID(id int) *MetricEventDeleteOne {
+	builder := c.Delete().Where(metricevent.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &MetricEventDeleteOne{builder}
+}
+
+// Query returns a query builder for MetricEvent.
+func (c *MetricEventClient) Query() *MetricEventQuery {
+	return &MetricEventQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeMetricEvent},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a MetricEvent entity by its id.
+func (c *MetricEventClient) Get(ctx context.Context, id int) (*MetricEvent, error) {
+	return c.Query().Where(metricevent.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *MetricEventClient) GetX(ctx context.Context, id int) *MetricEvent {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *MetricEventClient) Hooks() []Hook {
+	return c.hooks.MetricEvent
+}
+
+// Interceptors returns the client interceptors.
+func (c *MetricEventClient) Interceptors() []Interceptor {
+	return c.inters.MetricEvent
+}
+
+func (c *MetricEventClient) mutate(ctx context.Context, m *MetricEventMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&MetricEventCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&MetricEventUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&MetricEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&MetricEventDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown MetricEvent mutation op: %q", m.Op())
+	}
+}
+
+// PostClient is a client for the Post schema.
+type PostClient struct {
+	config
+}
+
+// NewPostClient returns a client for the Post from the given config.
+func NewPostClient(c config) *PostClient {
+	return &PostClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `post.Hooks(f(g(h())))`.
+func (c *PostClient) Use(hooks ...Hook) {
+	c.hooks.Post = append(c.hooks.Post, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `post.Intercept(f(g(h())))`.
+func (c *PostClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Post = append(c.inters.Post, interceptors...)
+}
+
+// Create returns a builder for creating a Post entity.
+func (c *PostClient) Create() *PostCreate {
+	mutation := newPostMutation(c.config, OpCreate)
+	return &PostCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Post entities.
+func (c *PostClient) CreateBulk(builders ...*PostCreate) *PostCreateBulk {
+	return &PostCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostClient) MapCreateBulk(slice any, setFunc func(*PostCreate, int)) *PostCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostCreateBulk{err: fmt.Errorf("calling to PostClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Post.
+func (c *PostClient) Update() *PostUpdate {
+	mutation := newPostMutation(c.config, OpUpdate)
+	return &PostUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostClient) UpdateOne(po *Post) *PostUpdateOne {
+	mutation := newPostMutation(c.config, OpUpdateOne, withPost(po))
+	return &PostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostClient) UpdateOneID(id int) *PostUpdateOne {
+	mutation := newPostMutation(c.config, OpUpdateOne, withPostID(id))
+	return &PostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Post.
+func (c *PostClient) Delete() *PostDelete {
+	mutation := newPostMutation(c.config, OpDelete)
+	return &PostDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostClient) DeleteOne(po *Post) *PostDeleteOne {
+	return c.DeleteOneID(po.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostClient) DeleteOneID(id int) *PostDeleteOne {
+	builder := c.Delete().Where(post.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostDeleteOne{builder}
+}
+
+// Query returns a query builder for Post.
+func (c *PostClient) Query() *PostQuery {
+	return &PostQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePost},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Post entity by its id.
+func (c *PostClient) Get(ctx context.Context, id int) (*Post, error) {
+	return c.Query().Where(post.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostClient) GetX(ctx context.Context, id int) *Post {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCategory queries the category edge of a Post.
+func (c *PostClient) QueryCategory(po *Post) *PostCategoryQuery {
+	query := (&PostCategoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := po.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(post.Table, post.FieldID, id),
+			sqlgraph.To(postcategory.Table, postcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, post.CategoryTable, post.CategoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(po.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTagRelations queries the tag_relations edge of a Post.
+func (c *PostClient) QueryTagRelations(po *Post) *PostTagRelationQuery {
+	query := (&PostTagRelationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := po.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(post.Table, post.FieldID, id),
+			sqlgraph.To(posttagrelation.Table, posttagrelation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, post.TagRelationsTable, post.TagRelationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(po.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAuthor queries the author edge of a Post.
+func (c *PostClient) QueryAuthor(po *Post) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := po.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(post.Table, post.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, post.AuthorTable, post.AuthorColumn),
+		)
+		fromV = sqlgraph.Neighbors(po.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *PostClient) Hooks() []Hook {
+	return c.hooks.Post
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostClient) Interceptors() []Interceptor {
+	return c.inters.Post
+}
+
+func (c *PostClient) mutate(ctx context.Context, m *PostMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Post mutation op: %q", m.Op())
+	}
+}
+
+// PostCategoryClient is a client for the PostCategory schema.
+type PostCategoryClient struct {
+	config
+}
+
+// NewPostCategoryClient returns a client for the PostCategory from the given config.
+func NewPostCategoryClient(c config) *PostCategoryClient {
+	return &PostCategoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `postcategory.Hooks(f(g(h())))`.
+func (c *PostCategoryClient) Use(hooks ...Hook) {
+	c.hooks.PostCategory = append(c.hooks.PostCategory, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `postcategory.Intercept(f(g(h())))`.
+func (c *PostCategoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PostCategory = append(c.inters.PostCategory, interceptors...)
+}
+
+// Create returns a builder for creating a PostCategory entity.
+func (c *PostCategoryClient) Create() *PostCategoryCreate {
+	mutation := newPostCategoryMutation(c.config, OpCreate)
+	return &PostCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PostCategory entities.
+func (c *PostCategoryClient) CreateBulk(builders ...*PostCategoryCreate) *PostCategoryCreateBulk {
+	return &PostCategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostCategoryClient) MapCreateBulk(slice any, setFunc func(*PostCategoryCreate, int)) *PostCategoryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostCategoryCreateBulk{err: fmt.Errorf("calling to PostCategoryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostCategoryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostCategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PostCategory.
+func (c *PostCategoryClient) Update() *PostCategoryUpdate {
+	mutation := newPostCategoryMutation(c.config, OpUpdate)
+	return &PostCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostCategoryClient) UpdateOne(pc *PostCategory) *PostCategoryUpdateOne {
+	mutation := newPostCategoryMutation(c.config, OpUpdateOne, withPostCategory(pc))
+	return &PostCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostCategoryClient) UpdateOneID(id int) *PostCategoryUpdateOne {
+	mutation := newPostCategoryMutation(c.config, OpUpdateOne, withPostCategoryID(id))
+	return &PostCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PostCategory.
+func (c *PostCategoryClient) Delete() *PostCategoryDelete {
+	mutation := newPostCategoryMutation(c.config, OpDelete)
+	return &PostCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostCategoryClient) DeleteOne(pc *PostCategory) *PostCategoryDeleteOne {
+	return c.DeleteOneID(pc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostCategoryClient) DeleteOneID(id int) *PostCategoryDeleteOne {
+	builder := c.Delete().Where(postcategory.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostCategoryDeleteOne{builder}
+}
+
+// Query returns a query builder for PostCategory.
+func (c *PostCategoryClient) Query() *PostCategoryQuery {
+	return &PostCategoryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePostCategory},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PostCategory entity by its id.
+func (c *PostCategoryClient) Get(ctx context.Context, id int) (*PostCategory, error) {
+	return c.Query().Where(postcategory.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostCategoryClient) GetX(ctx context.Context, id int) *PostCategory {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryPosts queries the posts edge of a PostCategory.
+func (c *PostCategoryClient) QueryPosts(pc *PostCategory) *PostQuery {
+	query := (&PostClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(postcategory.Table, postcategory.FieldID, id),
+			sqlgraph.To(post.Table, post.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, postcategory.PostsTable, postcategory.PostsColumn),
+		)
+		fromV = sqlgraph.Neighbors(pc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *PostCategoryClient) Hooks() []Hook {
+	return c.hooks.PostCategory
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostCategoryClient) Interceptors() []Interceptor {
+	return c.inters.PostCategory
+}
+
+func (c *PostCategoryClient) mutate(ctx context.Context, m *PostCategoryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PostCategory mutation op: %q", m.Op())
+	}
+}
+
+// PostTagClient is a client for the PostTag schema.
+type PostTagClient struct {
+	config
+}
+
+// NewPostTagClient returns a client for the PostTag from the given config.
+func NewPostTagClient(c config) *PostTagClient {
+	return &PostTagClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `posttag.Hooks(f(g(h())))`.
+func (c *PostTagClient) Use(hooks ...Hook) {
+	c.hooks.PostTag = append(c.hooks.PostTag, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `posttag.Intercept(f(g(h())))`.
+func (c *PostTagClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PostTag = append(c.inters.PostTag, interceptors...)
+}
+
+// Create returns a builder for creating a PostTag entity.
+func (c *PostTagClient) Create() *PostTagCreate {
+	mutation := newPostTagMutation(c.config, OpCreate)
+	return &PostTagCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PostTag entities.
+func (c *PostTagClient) CreateBulk(builders ...*PostTagCreate) *PostTagCreateBulk {
+	return &PostTagCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostTagClient) MapCreateBulk(slice any, setFunc func(*PostTagCreate, int)) *PostTagCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostTagCreateBulk{err: fmt.Errorf("calling to PostTagClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostTagCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostTagCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PostTag.
+func (c *PostTagClient) Update() *PostTagUpdate {
+	mutation := newPostTagMutation(c.config, OpUpdate)
+	return &PostTagUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostTagClient) UpdateOne(pt *PostTag) *PostTagUpdateOne {
+	mutation := newPostTagMutation(c.config, OpUpdateOne, withPostTag(pt))
+	return &PostTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostTagClient) UpdateOneID(id int) *PostTagUpdateOne {
+	mutation := newPostTagMutation(c.config, OpUpdateOne, withPostTagID(id))
+	return &PostTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PostTag.
+func (c *PostTagClient) Delete() *PostTagDelete {
+	mutation := newPostTagMutation(c.config, OpDelete)
+	return &PostTagDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostTagClient) DeleteOne(pt *PostTag) *PostTagDeleteOne {
+	return c.DeleteOneID(pt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostTagClient) DeleteOneID(id int) *PostTagDeleteOne {
+	builder := c.Delete().Where(posttag.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostTagDeleteOne{builder}
+}
+
+// Query returns a query builder for PostTag.
+func (c *PostTagClient) Query() *PostTagQuery {
+	return &PostTagQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePostTag},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PostTag entity by its id.
+func (c *PostTagClient) Get(ctx context.Context, id int) (*PostTag, error) {
+	return c.Query().Where(posttag.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostTagClient) GetX(ctx context.Context, id int) *PostTag {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryPostRelations queries the post_relations edge of a PostTag.
+func (c *PostTagClient) QueryPostRelations(pt *PostTag) *PostTagRelationQuery {
+	query := (&PostTagRelationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(posttag.Table, posttag.FieldID, id),
+			sqlgraph.To(posttagrelation.Table, posttagrelation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, posttag.PostRelationsTable, posttag.PostRelationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(pt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *PostTagClient) Hooks() []Hook {
+	return c.hooks.PostTag
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostTagClient) Interceptors() []Interceptor {
+	return c.inters.PostTag
+}
+
+func (c *PostTagClient) mutate(ctx context.Context, m *PostTagMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostTagCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostTagUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostTagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PostTag mutation op: %q", m.Op())
+	}
+}
+
+// PostTagRelationClient is a client for the PostTagRelation schema.
+type PostTagRelationClient struct {
+	config
+}
+
+// NewPostTagRelationClient returns a client for the PostTagRelation from the given config.
+func NewPostTagRelationClient(c config) *PostTagRelationClient {
+	return &PostTagRelationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `posttagrelation.Hooks(f(g(h())))`.
+func (c *PostTagRelationClient) Use(hooks ...Hook) {
+	c.hooks.PostTagRelation = append(c.hooks.PostTagRelation, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `posttagrelation.Intercept(f(g(h())))`.
+func (c *PostTagRelationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PostTagRelation = append(c.inters.PostTagRelation, interceptors...)
+}
+
+// Create returns a builder for creating a PostTagRelation entity.
+func (c *PostTagRelationClient) Create() *PostTagRelationCreate {
+	mutation := newPostTagRelationMutation(c.config, OpCreate)
+	return &PostTagRelationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PostTagRelation entities.
+func (c *PostTagRelationClient) CreateBulk(builders ...*PostTagRelationCreate) *PostTagRelationCreateBulk {
+	return &PostTagRelationCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PostTagRelationClient) MapCreateBulk(slice any, setFunc func(*PostTagRelationCreate, int)) *PostTagRelationCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PostTagRelationCreateBulk{err: fmt.Errorf("calling to PostTagRelationClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PostTagRelationCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PostTagRelationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PostTagRelation.
+func (c *PostTagRelationClient) Update() *PostTagRelationUpdate {
+	mutation := newPostTagRelationMutation(c.config, OpUpdate)
+	return &PostTagRelationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PostTagRelationClient) UpdateOne(ptr *PostTagRelation) *PostTagRelationUpdateOne {
+	mutation := newPostTagRelationMutation(c.config, OpUpdateOne, withPostTagRelation(ptr))
+	return &PostTagRelationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PostTagRelationClient) UpdateOneID(id int) *PostTagRelationUpdateOne {
+	mutation := newPostTagRelationMutation(c.config, OpUpdateOne, withPostTagRelationID(id))
+	return &PostTagRelationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PostTagRelation.
+func (c *PostTagRelationClient) Delete() *PostTagRelationDelete {
+	mutation := newPostTagRelationMutation(c.config, OpDelete)
+	return &PostTagRelationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PostTagRelationClient) DeleteOne(ptr *PostTagRelation) *PostTagRelationDeleteOne {
+	return c.DeleteOneID(ptr.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PostTagRelationClient) DeleteOneID(id int) *PostTagRelationDeleteOne {
+	builder := c.Delete().Where(posttagrelation.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PostTagRelationDeleteOne{builder}
+}
+
+// Query returns a query builder for PostTagRelation.
+func (c *PostTagRelationClient) Query() *PostTagRelationQuery {
+	return &PostTagRelationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePostTagRelation},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PostTagRelation entity by its id.
+func (c *PostTagRelationClient) Get(ctx context.Context, id int) (*PostTagRelation, error) {
+	return c.Query().Where(posttagrelation.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PostTagRelationClient) GetX(ctx context.Context, id int) *PostTagRelation {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryPost queries the post edge of a PostTagRelation.
+func (c *PostTagRelationClient) QueryPost(ptr *PostTagRelation) *PostQuery {
+	query := (&PostClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ptr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(posttagrelation.Table, posttagrelation.FieldID, id),
+			sqlgraph.To(post.Table, post.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, posttagrelation.PostTable, posttagrelation.PostColumn),
+		)
+		fromV = sqlgraph.Neighbors(ptr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPostTag queries the post_tag edge of a PostTagRelation.
+func (c *PostTagRelationClient) QueryPostTag(ptr *PostTagRelation) *PostTagQuery {
+	query := (&PostTagClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ptr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(posttagrelation.Table, posttagrelation.FieldID, id),
+			sqlgraph.To(posttag.Table, posttag.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, posttagrelation.PostTagTable, posttagrelation.PostTagColumn),
+		)
+		fromV = sqlgraph.Neighbors(ptr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *PostTagRelationClient) Hooks() []Hook {
+	return c.hooks.PostTagRelation
+}
+
+// Interceptors returns the client interceptors.
+func (c *PostTagRelationClient) Interceptors() []Interceptor {
+	return c.inters.PostTagRelation
+}
+
+func (c *PostTagRelationClient) mutate(ctx context.Context, m *PostTagRelationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PostTagRelationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PostTagRelationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PostTagRelationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PostTagRelationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PostTagRelation mutation op: %q", m.Op())
 	}
 }
 
@@ -2155,6 +2974,22 @@ func (c *UserClient) QueryUpdatedDevices(u *User) *DeviceQuery {
 	return query
 }
 
+// QueryPosts queries the posts edge of a User.
+func (c *UserClient) QueryPosts(u *User) *PostQuery {
+	query := (&PostClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(post.Table, post.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PostsTable, user.PostsColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
@@ -2183,11 +3018,13 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		AuditLog, Device, FirmwareVersion, LicenseType, LicenseTypeFeatures, Product,
+		AuditLog, Device, FirmwareVersion, LicenseType, LicenseTypeFeatures,
+		MetricEvent, Post, PostCategory, PostTag, PostTagRelation, Product,
 		ProductFeature, ProductManager, SoftwareVersion, User []ent.Hook
 	}
 	inters struct {
-		AuditLog, Device, FirmwareVersion, LicenseType, LicenseTypeFeatures, Product,
+		AuditLog, Device, FirmwareVersion, LicenseType, LicenseTypeFeatures,
+		MetricEvent, Post, PostCategory, PostTag, PostTagRelation, Product,
 		ProductFeature, ProductManager, SoftwareVersion, User []ent.Interceptor
 	}
 )

@@ -34,6 +34,8 @@ const (
 	EdgeCreatedDevices = "created_devices"
 	// EdgeUpdatedDevices holds the string denoting the updated_devices edge name in mutations.
 	EdgeUpdatedDevices = "updated_devices"
+	// EdgePosts holds the string denoting the posts edge name in mutations.
+	EdgePosts = "posts"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// ProductsTable is the table that holds the products relation/edge.
@@ -64,6 +66,13 @@ const (
 	UpdatedDevicesInverseTable = "devices"
 	// UpdatedDevicesColumn is the table column denoting the updated_devices relation/edge.
 	UpdatedDevicesColumn = "updated_by"
+	// PostsTable is the table that holds the posts relation/edge.
+	PostsTable = "posts"
+	// PostsInverseTable is the table name for the Post entity.
+	// It exists in this package in order to avoid circular dependency with the "post" package.
+	PostsInverseTable = "posts"
+	// PostsColumn is the table column denoting the posts relation/edge.
+	PostsColumn = "user_posts"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -195,6 +204,20 @@ func ByUpdatedDevices(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newUpdatedDevicesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByPostsCount orders the results by posts count.
+func ByPostsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPostsStep(), opts...)
+	}
+}
+
+// ByPosts orders the results by posts terms.
+func ByPosts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPostsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newProductsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -221,5 +244,12 @@ func newUpdatedDevicesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UpdatedDevicesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, UpdatedDevicesTable, UpdatedDevicesColumn),
+	)
+}
+func newPostsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PostsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PostsTable, PostsColumn),
 	)
 }

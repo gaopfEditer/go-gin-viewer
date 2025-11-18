@@ -22,6 +22,16 @@ type Tx struct {
 	LicenseType *LicenseTypeClient
 	// LicenseTypeFeatures is the client for interacting with the LicenseTypeFeatures builders.
 	LicenseTypeFeatures *LicenseTypeFeaturesClient
+	// MetricEvent is the client for interacting with the MetricEvent builders.
+	MetricEvent *MetricEventClient
+	// Post is the client for interacting with the Post builders.
+	Post *PostClient
+	// PostCategory is the client for interacting with the PostCategory builders.
+	PostCategory *PostCategoryClient
+	// PostTag is the client for interacting with the PostTag builders.
+	PostTag *PostTagClient
+	// PostTagRelation is the client for interacting with the PostTagRelation builders.
+	PostTagRelation *PostTagRelationClient
 	// Product is the client for interacting with the Product builders.
 	Product *ProductClient
 	// ProductFeature is the client for interacting with the ProductFeature builders.
@@ -168,6 +178,11 @@ func (tx *Tx) init() {
 	tx.FirmwareVersion = NewFirmwareVersionClient(tx.config)
 	tx.LicenseType = NewLicenseTypeClient(tx.config)
 	tx.LicenseTypeFeatures = NewLicenseTypeFeaturesClient(tx.config)
+	tx.MetricEvent = NewMetricEventClient(tx.config)
+	tx.Post = NewPostClient(tx.config)
+	tx.PostCategory = NewPostCategoryClient(tx.config)
+	tx.PostTag = NewPostTagClient(tx.config)
+	tx.PostTagRelation = NewPostTagRelationClient(tx.config)
 	tx.Product = NewProductClient(tx.config)
 	tx.ProductFeature = NewProductFeatureClient(tx.config)
 	tx.ProductManager = NewProductManagerClient(tx.config)

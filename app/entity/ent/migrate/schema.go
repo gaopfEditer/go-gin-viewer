@@ -196,6 +196,223 @@ var (
 			},
 		},
 	}
+	// MetricEventsColumns holds the columns for the "metric_events" table.
+	MetricEventsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "type", Type: field.TypeString},
+		{Name: "ts", Type: field.TypeInt64},
+		{Name: "page", Type: field.TypeString, Default: ""},
+		{Name: "page_id", Type: field.TypeString, Default: ""},
+		{Name: "referrer", Type: field.TypeString, Default: ""},
+		{Name: "user_agent", Type: field.TypeString, Default: ""},
+		{Name: "payload", Type: field.TypeString, Size: 2147483647},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// MetricEventsTable holds the schema information for the "metric_events" table.
+	MetricEventsTable = &schema.Table{
+		Name:       "metric_events",
+		Columns:    MetricEventsColumns,
+		PrimaryKey: []*schema.Column{MetricEventsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "metricevent_type",
+				Unique:  false,
+				Columns: []*schema.Column{MetricEventsColumns[1]},
+			},
+			{
+				Name:    "metricevent_ts",
+				Unique:  false,
+				Columns: []*schema.Column{MetricEventsColumns[2]},
+			},
+			{
+				Name:    "metricevent_page",
+				Unique:  false,
+				Columns: []*schema.Column{MetricEventsColumns[3]},
+			},
+			{
+				Name:    "metricevent_page_id",
+				Unique:  false,
+				Columns: []*schema.Column{MetricEventsColumns[4]},
+			},
+			{
+				Name:    "metricevent_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{MetricEventsColumns[8]},
+			},
+		},
+	}
+	// PostsColumns holds the columns for the "posts" table.
+	PostsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "title", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "excerpt", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "slug", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "status", Type: field.TypeString, Default: "draft"},
+		{Name: "view_count", Type: field.TypeInt, Default: 0},
+		{Name: "published_at", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "post_category_posts", Type: field.TypeInt, Nullable: true},
+		{Name: "user_posts", Type: field.TypeInt, Nullable: true},
+	}
+	// PostsTable holds the schema information for the "posts" table.
+	PostsTable = &schema.Table{
+		Name:       "posts",
+		Columns:    PostsColumns,
+		PrimaryKey: []*schema.Column{PostsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "posts_post_categories_posts",
+				Columns:    []*schema.Column{PostsColumns[10]},
+				RefColumns: []*schema.Column{PostCategoriesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "posts_users_posts",
+				Columns:    []*schema.Column{PostsColumns[11]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "post_slug",
+				Unique:  true,
+				Columns: []*schema.Column{PostsColumns[4]},
+			},
+			{
+				Name:    "post_status",
+				Unique:  false,
+				Columns: []*schema.Column{PostsColumns[5]},
+			},
+			{
+				Name:    "post_published_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostsColumns[7]},
+			},
+			{
+				Name:    "post_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{PostsColumns[8]},
+			},
+		},
+	}
+	// PostCategoriesColumns holds the columns for the "post_categories" table.
+	PostCategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "slug", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "color", Type: field.TypeString, Nullable: true},
+		{Name: "sort_order", Type: field.TypeInt, Default: 0},
+		{Name: "is_active", Type: field.TypeBool, Default: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// PostCategoriesTable holds the schema information for the "post_categories" table.
+	PostCategoriesTable = &schema.Table{
+		Name:       "post_categories",
+		Columns:    PostCategoriesColumns,
+		PrimaryKey: []*schema.Column{PostCategoriesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "postcategory_slug",
+				Unique:  true,
+				Columns: []*schema.Column{PostCategoriesColumns[2]},
+			},
+			{
+				Name:    "postcategory_is_active",
+				Unique:  false,
+				Columns: []*schema.Column{PostCategoriesColumns[6]},
+			},
+			{
+				Name:    "postcategory_sort_order",
+				Unique:  false,
+				Columns: []*schema.Column{PostCategoriesColumns[5]},
+			},
+		},
+	}
+	// PostTagsColumns holds the columns for the "post_tags" table.
+	PostTagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "slug", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "color", Type: field.TypeString, Nullable: true},
+		{Name: "post_count", Type: field.TypeInt, Default: 0},
+		{Name: "is_active", Type: field.TypeBool, Default: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// PostTagsTable holds the schema information for the "post_tags" table.
+	PostTagsTable = &schema.Table{
+		Name:       "post_tags",
+		Columns:    PostTagsColumns,
+		PrimaryKey: []*schema.Column{PostTagsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "posttag_slug",
+				Unique:  true,
+				Columns: []*schema.Column{PostTagsColumns[2]},
+			},
+			{
+				Name:    "posttag_is_active",
+				Unique:  false,
+				Columns: []*schema.Column{PostTagsColumns[6]},
+			},
+			{
+				Name:    "posttag_post_count",
+				Unique:  false,
+				Columns: []*schema.Column{PostTagsColumns[5]},
+			},
+		},
+	}
+	// PostTagRelationsColumns holds the columns for the "post_tag_relations" table.
+	PostTagRelationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "post_id", Type: field.TypeInt},
+		{Name: "post_tag_id", Type: field.TypeInt},
+	}
+	// PostTagRelationsTable holds the schema information for the "post_tag_relations" table.
+	PostTagRelationsTable = &schema.Table{
+		Name:       "post_tag_relations",
+		Columns:    PostTagRelationsColumns,
+		PrimaryKey: []*schema.Column{PostTagRelationsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "post_tag_relations_posts_tag_relations",
+				Columns:    []*schema.Column{PostTagRelationsColumns[2]},
+				RefColumns: []*schema.Column{PostsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "post_tag_relations_post_tags_post_relations",
+				Columns:    []*schema.Column{PostTagRelationsColumns[3]},
+				RefColumns: []*schema.Column{PostTagsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "posttagrelation_post_id_post_tag_id",
+				Unique:  true,
+				Columns: []*schema.Column{PostTagRelationsColumns[2], PostTagRelationsColumns[3]},
+			},
+			{
+				Name:    "posttagrelation_post_id",
+				Unique:  false,
+				Columns: []*schema.Column{PostTagRelationsColumns[2]},
+			},
+			{
+				Name:    "posttagrelation_post_tag_id",
+				Unique:  false,
+				Columns: []*schema.Column{PostTagRelationsColumns[3]},
+			},
+		},
+	}
 	// ProductsColumns holds the columns for the "products" table.
 	ProductsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -391,6 +608,11 @@ var (
 		FirmwareVersionsTable,
 		LicenseTypesTable,
 		LicenseTypeFeaturesTable,
+		MetricEventsTable,
+		PostsTable,
+		PostCategoriesTable,
+		PostTagsTable,
+		PostTagRelationsTable,
 		ProductsTable,
 		ProductFeaturesTable,
 		ProductManagersTable,
@@ -413,6 +635,10 @@ func init() {
 	LicenseTypesTable.ForeignKeys[0].RefTable = ProductsTable
 	LicenseTypeFeaturesTable.ForeignKeys[0].RefTable = LicenseTypesTable
 	LicenseTypeFeaturesTable.ForeignKeys[1].RefTable = ProductFeaturesTable
+	PostsTable.ForeignKeys[0].RefTable = PostCategoriesTable
+	PostsTable.ForeignKeys[1].RefTable = UsersTable
+	PostTagRelationsTable.ForeignKeys[0].RefTable = PostsTable
+	PostTagRelationsTable.ForeignKeys[1].RefTable = PostTagsTable
 	ProductFeaturesTable.ForeignKeys[0].RefTable = ProductsTable
 	ProductManagersTable.ForeignKeys[0].RefTable = ProductsTable
 	ProductManagersTable.ForeignKeys[1].RefTable = UsersTable
