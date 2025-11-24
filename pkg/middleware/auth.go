@@ -15,6 +15,7 @@ import (
 var noAuthRouters = []string{
 	"/base",
 	"/device/activation-file",
+	"/ws", // WebSocket 连接端点（可选认证）
 }
 
 // JwtAuth jwt认证

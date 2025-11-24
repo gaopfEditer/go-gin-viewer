@@ -16,8 +16,11 @@
 *.dll
 *.so
 *.dylib
-app
-go-viewer
+# 只排除根目录下的可执行文件，不排除 app/ 源代码目录
+/app
+/go-viewer
+# 明确包含 app/ 源代码目录
+!app/
 
 # 测试文件
 *_test.go
@@ -36,10 +39,10 @@ tmp/
 temp/
 *.tmp
 
-# 文档
+# 文档（保留 docs 目录，因为代码中导入了 docs 包）
 README.md
 *.md
-docs/
+# docs/  # 注释掉，因为 main.go 中导入了 docs 包
 
 # Docker 相关
 Dockerfile*

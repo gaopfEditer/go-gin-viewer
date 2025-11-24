@@ -2,26 +2,32 @@ version: '3.8'
 
 services:
   # Go 应用服务
-  go-viewer:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
+      # 默认使用国内代理，如果网络正常可设置为空使用官方源
+      # args:
+      #   GOPROXY: ""
+      #   GOSUMDB: ""
     container_name: go-viewer-app
     ports:
       - "17080:17080"
     environment:
       - TZ=Asia/Shanghai
     volumes:
-      # 挂载配置文件（可选，用于动态修改配置）
+      # 挂载配置文件（可读写，方便修改配置）
       - ./resource/static/config.yml:/app/resource/static/config.yml:ro
-      # 挂载日志目录（可选，用于持久化日志）
+      # 挂载日志目录
       - ./logs:/app/logs
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
     networks:
       - go-viewer-network
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:17080/swagger/index.html"]
       interval: 30s
@@ -36,21 +42,26 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Cambridge#*DR
       MYSQL_DATABASE: activate_server
+      MYSQL_USER: root
       TZ: Asia/Shanghai
     ports:
       - "3388:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro  # 可选：初始化 SQL
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
     networks:
       - go-viewer-network
-    restart: unless-stopped
-    command: --default-authentication-plugin=mysql_native_password
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pCambridge#*DR"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   # Redis 服务
   redis:
@@ -60,15 +71,16 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    restart: unless-stopped
     networks:
       - go-viewer-network
-    restart: unless-stopped
     command: redis-server --appendonly yes
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
+      start_period: 10s
 
 networks:
   go-viewer-network:

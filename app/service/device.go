@@ -20,6 +20,7 @@ import (
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/product"
 	"cambridge-hit.com/gin-base/activateserver/app/entity/ent/productmanager"
 	"cambridge-hit.com/gin-base/activateserver/pkg/util/logger"
+	"cambridge-hit.com/gin-base/activateserver/pkg/util/str"
 	"cambridge-hit.com/gin-base/activateserver/resource"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -31,6 +32,20 @@ type DeviceService struct{}
 // NewDeviceService 创建设备管理服务实例
 func NewDeviceService() *DeviceService {
 	return &DeviceService{}
+}
+
+// encryptSN 加密设备序列号
+func encryptSN(sn string) string {
+	if sn == "" {
+		return ""
+	}
+	// 使用固定的密钥进行加密，与C++端的AES加密保持一致
+	encrypted, err := str.Encrypt(sn, "device_sn_encrypt_key_2024")
+	if err != nil {
+		logger.Error("encrypt device sn failed", zap.Error(err), zap.String("sn", sn))
+		return ""
+	}
+	return encrypted
 }
 
 // ListProducts 获取产品列表（带设备数量统计）
@@ -172,6 +187,7 @@ func (s *DeviceService) ListDevices(c *gin.Context, userID int, filter dto.Devic
 		deviceInfo := dto.DeviceInfo{
 			ID:            d.ID,
 			SN:            d.Sn,
+			SNEncrypted:   encryptSN(d.Sn),
 			ProductID:     d.ProductID,
 			LicenseTypeID: d.LicenseTypeID,
 			OEMTag:        d.OemTag,
@@ -249,6 +265,7 @@ func (s *DeviceService) GetDeviceBySN(c *gin.Context, userID int, sn string) (*d
 	deviceInfo := dto.DeviceInfo{
 		ID:            d.ID,
 		SN:            d.Sn,
+		SNEncrypted:   encryptSN(d.Sn),
 		ProductID:     d.ProductID,
 		LicenseTypeID: d.LicenseTypeID,
 		OEMTag:        d.OemTag,

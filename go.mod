@@ -14,6 +14,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/golang-jwt/jwt/v4 v4.5.1
+	github.com/gorilla/websocket v1.5.3
 	github.com/json-iterator/go v1.1.12
 	github.com/mitchellh/mapstructure v1.5.1-0.20231216201459-8508981c8b6c
 	github.com/mojocn/base64Captcha v1.3.6

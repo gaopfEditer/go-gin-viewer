@@ -42,6 +42,7 @@ type DeviceUpdate struct {
 type DeviceInfo struct {
 	ID              int       `json:"id"`
 	SN              string    `json:"sn"`
+	SNEncrypted     string    `json:"sn_encrypted"` // 序列号AES加密字段
 	ProductID       int       `json:"product_id"`
 	ProductName     string    `json:"product_name"`
 	ProductCode     string    `json:"product_code"`
